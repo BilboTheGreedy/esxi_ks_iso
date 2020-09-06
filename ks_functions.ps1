@@ -1,9 +1,3 @@
-class vCenter {
-    [string]$Name
-    [string]$SystemName
-
-}
-
 class Host {
     [string]$Hostname
     [string[]]$NTPSources
@@ -21,7 +15,6 @@ class Host {
 }
 
 Class vSphere {
-    [vCenter]$vCenter
     [System.Collections.ArrayList]$Hosts = @()
     AddHost([string]$Name) {
         $newHost = [Host]::new($Name)
