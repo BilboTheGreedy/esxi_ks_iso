@@ -489,17 +489,21 @@ $emulationType = @{
 
 $imgCreator = New-Object -ComObject IMAPI2FS.MsftFileSystemImage
 
-$imgCreator.FileSystemsToCreate = 3
+$imgCreator.FileSystemsToCreate = 1
 $imgCreator.FreeMediaBlocks = 0 # No size limit on ISO.
 
+[byte[]] $bytes = 16,0,0,0,20,0,0,0 #or 16,0,0,0,0,0,0,0
 $bootOptionsBios = New-Object -ComObject IMAPI2FS.BootOptions
 $bootStreamBios = New-Object -ComObject ADODB.Stream
 $bootStreamBios.Open()
 $bootStreamBios.Type = 1 # Binary
 $bootStreamBios.LoadFromFile((Get-Item ($ISO.Source+"\ISOLINUX.BIN")).FullName)
+$bootStreamBios.Position = 8
+$bootStreamBios.Write($bytes)
 $bootOptionsBios.AssignBootImage($bootStreamBios)
 $bootOptionsBios.PlatformId = $platformId.x86
 $bootOptionsBios.Emulation = $emulationType.None
+
 
 $bootOptionsEfi = New-Object -ComObject IMAPI2FS.BootOptions
 $bootStreamEfi = New-Object -ComObject ADODB.Stream
@@ -538,6 +542,7 @@ while ([System.Runtime.Interopservices.Marshal]::ReleaseComObject($imgCreator) -
 [System.GC]::Collect()
 [System.GC]::WaitForPendingFinalizers()
 
+
 }
 
 function Set-SourceFiles {
@@ -554,3 +559,5 @@ function Set-SourceFiles {
 }
 
 if ($vSphere) {Remove-Variable vSphere}
+
+
