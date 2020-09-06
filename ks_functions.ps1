@@ -240,7 +240,6 @@ function Add-NetworkAdapter {
     }
     
     end {
-        $vSwitch
     }
 }
 
@@ -330,11 +329,12 @@ function Format-Uplinks {
         [string]$Name
     )
     $VMH = Get-VMH -Hostname $Name
+    $result ="#Uplinks`r`n"
     foreach ($vSwitch in $VMH.vSwitches)
     {
         foreach ($NetworkAdapter in $vSwitch.NetworkAdapters){
-            $result ="#Uplinks`r`n"
-            $result += "esxcli network vswitch standard uplink add --uplink-name=$($NetworkAdapter)  --vswitch-name=$($vSwitch.Name)`r`n"
+            
+            $result += "esxcli network vswitch standard uplink add --uplink-name=$($NetworkAdapter.Name)  --vswitch-name=$($vSwitch.Name)`r`n"
         }
         
     }
