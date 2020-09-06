@@ -544,6 +544,7 @@ while ([System.Runtime.Interopservices.Marshal]::ReleaseComObject($imgCreator) -
 function Set-SourceFiles {
     param (
     )
+    if (!(Test-Path $ISO.Source -PathType Container)){mkdir $ISO.Source|Out-Null}
     Copy-Item ($ISO.Drive+"\*") -Destination $ISO.Source -Force -Recurse
     Set-ItemProperty ($ISO.Source+"\BOOT.CFG") -Name isReadOnly -Value $False
     (Get-Content ($ISO.Source+"\BOOT.CFG")).Replace("cdromBoot","ks=cdrom:/KS.CFG") | Set-Content ($ISO.Source+"\BOOT.CFG")
@@ -554,5 +555,3 @@ function Set-SourceFiles {
 }
 
 if ($vSphere) {Remove-Variable vSphere}
-
-
