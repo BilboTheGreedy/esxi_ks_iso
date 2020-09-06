@@ -18,13 +18,11 @@ $vSwitch | Add-PortGroup -Name VCSA -VlanId 40
 #Get-VMH "*" | Remove-VMH
 Set-Paths -ISOPath "$PSScriptRoot\VMware-VMvisor-Installer-201912001-15160138.x86_64.iso" -WorkDirectory "$PSScriptRoot\source" -OutputDirectory "$PSScriptRoot\ISO"
 Mount-ISO 
+Set-SourceFiles
 foreach ($VMH in (Get-VMH -Hostname "*").Hostname)
 {
-
-    Set-SourceFiles
     New-KsScript -Hostname $VMH
     Write-ISO -ISOName $VMH
-
 }
 Dismount-DiskImage -DevicePath $ISO.DevicePath | Out-Null
 Write-Host "Done :)"
