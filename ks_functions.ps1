@@ -538,7 +538,6 @@ while ([System.Runtime.Interopservices.Marshal]::ReleaseComObject($imgCreator) -
 [System.GC]::Collect()
 [System.GC]::WaitForPendingFinalizers()
 
-#Complete-Task -Status Info "Done!"
 }
 
 function Set-SourceFiles {
