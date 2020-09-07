@@ -3,7 +3,7 @@ Generate Bootable esxi iso with baked kickstart scripts natively in powershell
 
 No need for mkisofs here :)
 No need for openssl passwd here :)
-try the example, make sure to have the -ISOPath on row 25 set your actual path to esxi install media.
+try the example, make sure to have the -ISOPath set your actual path to esxi install media.
 
 If you want to make changes and include more options in the kickstart script, look at the New-KsScript function in ks_functions.ps1
 
