@@ -29,7 +29,7 @@ $1$Y2MFiAzF$R2vXRLnjWNKL4rZgspDkQ0                                              
 
 ```
 
-##Example of a generated kickstart script
+## Example of a generated kickstart script
 ```
 accepteula
 
