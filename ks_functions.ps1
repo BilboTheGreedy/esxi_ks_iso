@@ -382,7 +382,7 @@ function New-KsScript {
 $ks_tmpl = @"
 accepteula
 
-rootpw --iscrypted $(New-RootPW -ClearString $Hostname)
+rootpw --iscrypted $(Format-RootPW -Name $Hostname)
 $(Format-ManagementNetwork -Name $Hostname)
 install --firstdisk=local --overwritevmfs
 
@@ -980,5 +980,3 @@ function Out-Json {
 }
 
 if ($vSphere) {Remove-Variable vSphere}
-
-
