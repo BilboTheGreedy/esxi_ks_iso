@@ -1,6 +1,7 @@
 class Host {
     [string]$Hostname
-    [string[]]$NTPSources
+    [System.Collections.ArrayList]$NTPSources = @() #v1.1
+    [string]$RootPassword
     [ManagementNetwork]$ManagementNetwork = [ManagementNetwork]::new()
     
     [System.Collections.ArrayList]$vSwitches = @()
@@ -10,6 +11,10 @@ class Host {
     AddvSwitch([string]$Name) {
         $newSwitch = [vSwitch]::new($Name)
         $this.vSwitches.Add($newSwitch)
+    }
+    ## v1.1
+    AddNTPSource([string]$NTP) {
+        $this.NTPSources.Add($NTP)
     }
 
 }
@@ -143,6 +148,27 @@ function Get-VMH {
     
     end {
 
+    }
+}
+
+function Add-NTPSource {
+    [CmdletBinding()]
+    param (
+        [Parameter(ValueFromPipeline)]
+        [Host]$Hostname,
+        [string]$NTPSource
+    )
+    
+    begin {
+        
+    }
+    
+    process {
+        $Hostname.AddNTPSource($NTPSource)
+    }
+    
+    end {
+        
     }
 }
 
@@ -342,6 +368,36 @@ function Format-Uplinks {
     return $result
 }
 
+function Format-NTPSources {
+    param (
+        [string]$Name
+    )
+    $VMH = Get-VMH -Hostname $Name
+    foreach ($NTPSource in $VMH.NTPSources)
+    {
+        $NTPSource
+        $NTPSourcesResults += "server $NTPSource`r`n"
+        
+    }
+if ($NTPSourcesResults -ne $null) {
+$result = @"
+cat > /etc/ntp.conf << __EOF__
+restrict default kod nomodify notrap noquery nopeer
+restrict 127.0.0.1
+driftfile /etc/ntp.drift
+$NTPSourcesResults
+__EOF__
+/sbin/chkconfig ntpd on   
+"@
+return $result
+}
+else {
+    return
+}
+
+    
+}
+
 function New-RootPW {
     Param (
         [Parameter(Mandatory=$true)]
@@ -384,6 +440,7 @@ vim-cmd hostsvc/start_ssh
 vim-cmd hostsvc/enable_esx_shell
 vim-cmd hostsvc/start_esx_shell
 esxcli system settings advanced set -o /UserVars/SuppressShellWarning -i 1
+$(Format-NTPSources -Name $Hostname)
 "@
     }
     
@@ -429,7 +486,6 @@ function Set-Paths {
 
 
 function Write-ISO ($ISOName) {
-#Start-Task "Writing install media iso" -Tags WriteMediaISO
 Write-Host "Writing ISO file $($ISO.Output+"\"+$ISOName)"
 $cmpParams = New-Object System.CodeDom.Compiler.CompilerParameters -Property @{
     CompilerOptions = "/unsafe"
