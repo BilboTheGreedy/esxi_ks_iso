@@ -18,3 +18,14 @@ Generating Kickstart script for ESXi03.test.local
 Writing ISO file C:\projects\ks_functions\ISO\ESXi03.test.local
 Done :)
 ```
+
+```
+### linux Crypt password hashing
+PS C:\projects\ks_functions> ($vsphere.hosts | select password).password
+Hashed                                                                                                     Algorithm PlainText
+------                                                                                                     --------- ---------
+$6$5rjHimqYHvtJ9cb.$X3OKBTNAPEpsbB37ocOtbaazFqxsFR/R/9FxFXtA0rZY3BT4HyKT.EgTI7voEeqHUl1BO6v8jkNDHXUoRpcHQ0 SHA512    SuperSecret1
+$5$e53X/oDaa/JqO7VP$AXcRism7LxZ16OrPE3NlXlO8zmgLxJSR.fTfbT49CD7                                            SHA256    SuperSecret2
+$1$Y2MFiAzF$R2vXRLnjWNKL4rZgspDkQ0                                                                         MD5       SuperSecret3
+
+```
