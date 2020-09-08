@@ -12,6 +12,9 @@ class Host {
         $newSwitch = [vSwitch]::new($Name)
         $this.vSwitches.Add($newSwitch)
     }
+    AddNTPSource([string]$NTP) {
+        $this.NTPSources.Add($NTP)
+    }
 
 }
 

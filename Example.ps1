@@ -30,7 +30,7 @@ $vSwitch | Add-NetworkAdapter -vmnic vmnic5
 $vSwitch | Add-PortGroup -Name DC -VlanId 10
 $vSwitch | Add-PortGroup -Name VCSA -VlanId 40
 #Get-VMH "*" | Remove-VMH
-Set-Paths -ISOPath "$PSScriptRoot\VMware-VMvisor-Installer-201912001-15160138.x86_64.iso" -WorkDirectory "$PSScriptRoot\source" -OutputDirectory "$PSScriptRoot\ISO"
+Set-Paths -ISOPath "$PSScriptRoot\VMware-VMvisor-Installer-6.7.0.update03-14320388.x86_64.iso" -WorkDirectory "$PSScriptRoot\source" -OutputDirectory "$PSScriptRoot\ISO"
 Mount-ISO 
 Set-SourceFiles
 foreach ($VMH in (Get-VMH -Hostname "*").Hostname)
