@@ -1,6 +1,6 @@
 class Host {
     [string]$Hostname
-    [string[]]$NTPSources
+    [System.Collections.ArrayList]$NTPSources = @() 
     [Password]$Password
     [ManagementNetwork]$ManagementNetwork = [ManagementNetwork]::new()
     
