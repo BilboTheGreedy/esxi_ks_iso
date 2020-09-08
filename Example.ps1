@@ -41,3 +41,4 @@ foreach ($VMH in (Get-VMH -Hostname "*").Hostname)
 }
 Dismount-DiskImage -DevicePath $ISO.DevicePath | Out-Null
 Write-Host "Done :)"
+Out-Json | Out-File "Current-config.json" -Encoding ascii

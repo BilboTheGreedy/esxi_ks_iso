@@ -1,0 +1,139 @@
+{
+    "Hosts":  [
+                  {
+                      "NTPSources":  [
+                                         "10.10.10.8",
+                                         "10.10.11.8"
+                                     ],
+                      "ManagementNetwork":  {
+                                                "IPAddress":  "192.168.88.120",
+                                                "NetworkMask":  "255.255.255.0",
+                                                "Gateway":  "192.168.88.1",
+                                                "VlanId":  99,
+                                                "Nameservers":  [
+                                                                    "192.168.88.10",
+                                                                    "192.168.10.11"
+                                                                ]
+                                            },
+                      "vSwitches":  [
+                                        {
+                                            "NetworkAdapters":  [
+                                                                    {
+                                                                        "Name":  "vmnic4"
+                                                                    },
+                                                                    {
+                                                                        "Name":  "vmnic5"
+                                                                    }
+                                                                ],
+                                            "PortGroups":  [
+                                                               {
+                                                                   "Name":  "DC",
+                                                                   "VlanId":  10
+                                                               },
+                                                               {
+                                                                   "Name":  "VCSA",
+                                                                   "VlanId":  40
+                                                               }
+                                                           ],
+                                            "Name":  "vSwitch1"
+                                        }
+                                    ],
+                      "Hostname":  "ESXi01.test.local",
+                      "Password":  {
+                                       "Hashed":  "$6$FOwec5H8DisxEqgY$DjoaDe2bEWnxg7IeGXhnVjWp1j1MDdyW1mWREgxEgdhuaHiHVLsNh9bdu.vtb7A2qQE988yCxfjqkrdEmDEJV0",
+                                       "Algorithm":  "SHA512",
+                                       "PlainText":  "SuperSecret1"
+                                   }
+                  },
+                  {
+                      "NTPSources":  [
+                                         "10.10.10.8",
+                                         "10.10.11.8"
+                                     ],
+                      "ManagementNetwork":  {
+                                                "IPAddress":  "192.168.88.120",
+                                                "NetworkMask":  "255.255.255.0",
+                                                "Gateway":  "192.168.88.1",
+                                                "VlanId":  99,
+                                                "Nameservers":  [
+                                                                    "192.168.88.10",
+                                                                    "192.168.10.11"
+                                                                ]
+                                            },
+                      "vSwitches":  [
+                                        {
+                                            "NetworkAdapters":  [
+                                                                    {
+                                                                        "Name":  "vmnic4"
+                                                                    },
+                                                                    {
+                                                                        "Name":  "vmnic5"
+                                                                    }
+                                                                ],
+                                            "PortGroups":  [
+                                                               {
+                                                                   "Name":  "DC",
+                                                                   "VlanId":  10
+                                                               },
+                                                               {
+                                                                   "Name":  "VCSA",
+                                                                   "VlanId":  40
+                                                               }
+                                                           ],
+                                            "Name":  "vSwitch1"
+                                        }
+                                    ],
+                      "Hostname":  "ESXi02.test.local",
+                      "Password":  {
+                                       "Hashed":  "$5$o1wqrYq.HQRDBX.d$K5ebz6j1lJQtwsgk7ZgYTBFsqmUWdjtppXaCrNKuvQD",
+                                       "Algorithm":  "SHA256",
+                                       "PlainText":  "SuperSecret2"
+                                   }
+                  },
+                  {
+                      "NTPSources":  [
+                                         "10.10.10.8",
+                                         "10.10.11.8"
+                                     ],
+                      "ManagementNetwork":  {
+                                                "IPAddress":  "192.168.88.120",
+                                                "NetworkMask":  "255.255.255.0",
+                                                "Gateway":  "192.168.88.1",
+                                                "VlanId":  99,
+                                                "Nameservers":  [
+                                                                    "192.168.88.10",
+                                                                    "192.168.10.11"
+                                                                ]
+                                            },
+                      "vSwitches":  [
+                                        {
+                                            "NetworkAdapters":  [
+                                                                    {
+                                                                        "Name":  "vmnic4"
+                                                                    },
+                                                                    {
+                                                                        "Name":  "vmnic5"
+                                                                    }
+                                                                ],
+                                            "PortGroups":  [
+                                                               {
+                                                                   "Name":  "DC",
+                                                                   "VlanId":  10
+                                                               },
+                                                               {
+                                                                   "Name":  "VCSA",
+                                                                   "VlanId":  40
+                                                               }
+                                                           ],
+                                            "Name":  "vSwitch1"
+                                        }
+                                    ],
+                      "Hostname":  "ESXi03.test.local",
+                      "Password":  {
+                                       "Hashed":  "$1$vcGNJDPU$nbrW1TYaZl6D10zOnt0Zi/",
+                                       "Algorithm":  "MD5",
+                                       "PlainText":  "SuperSecret3"
+                                   }
+                  }
+              ]
+}
