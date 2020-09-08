@@ -24,8 +24,8 @@ Done :)
 Because everything is written with Objects its easy to reuse configurations. Include Out-Json | Out-File "x\y.json" -encoding ascii at the end of your script. And to reuse it, do the following.
 ```
 $ConfigJson = cat .\Current-config.json | ConvertFrom-Json
-$ConfigObj = [vSphere]::new()
-$ConfigObj = $ConfigJson
+$vSphere = [vSphere]::new()
+$vSphere = $ConfigJson
 Set-Paths -ISOPath "$PSScriptRoot\VMware-VMvisor-Installer-6.7.0.update03-14320388.x86_64.iso" -WorkDirectory "$PSScriptRoot\source" -OutputDirectory "$PSScriptRoot\ISO"
 Mount-ISO 
 Set-SourceFiles
