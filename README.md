@@ -1,9 +1,7 @@
 # esxi_ks_iso
 Generate Bootable esxi iso with baked kickstart scripts natively in powershell
 
-No need for mkisofs here :)
-
-No need for openssl passwd here :)
+No need for mkisofs here or openssl passwd here.
 
 try the example, make sure to have the -ISOPath set your actual path to esxi install media.
 
@@ -21,6 +19,25 @@ Generating Kickstart script for ESXi03.test.local
 Writing ISO file C:\projects\ks_functions\ISO\ESXi03.test.local
 Done :)
 ```
+### Reuse configuration
+
+Because everything is written with Objects its easy to reuse configurations. Include Out-Json | Out-File "x\y.json" -encoding ascii at the end of your script. And to reuse it, do the following.
+```
+$ConfigJson = cat .\Current-config.json | ConvertFrom-Json
+$ConfigObj = [vSphere]::new()
+$ConfigObj = $ConfigJson
+Set-Paths -ISOPath "$PSScriptRoot\VMware-VMvisor-Installer-6.7.0.update03-14320388.x86_64.iso" -WorkDirectory "$PSScriptRoot\source" -OutputDirectory "$PSScriptRoot\ISO"
+Mount-ISO 
+Set-SourceFiles
+foreach ($VMH in (Get-VMH -Hostname "*").Hostname)
+{
+    New-KsScript -Hostname $VMH
+    Write-ISO -ISOName $VMH
+
+}
+Dismount-DiskImage -DevicePath $ISO.DevicePath | Out-Null
+```
+
 ### linux Crypt password hashing
 ```
 PS C:\projects\ks_functions> ($vsphere.hosts | select password).password
