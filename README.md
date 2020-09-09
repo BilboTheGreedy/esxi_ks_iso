@@ -5,7 +5,7 @@ No need for mkisofs here or openssl passwd here.
 
 The big part of what makes this script different from others around on the internet is the use of c# code inside powershell to do what mkisofs and openssl has done. That is creating the bootable ISO (mkisofs style) and generate linux crypt hash with $id$salt$hash (openssl passwd -6 -salt xyz). 
 
-Take a look at the functions Get-CryptHash and Write-ISO.
+Take a look at the functions Get-CryptHash and Write-ISO. Feel free to rip them out of ks_functions to create your own. You may need to make adjustment to Write-ISO depending on what media you intend to create. For my case its just for ESXi.
 
 try the example, make sure to have the -ISOPath set your actual path to esxi install media.
 
