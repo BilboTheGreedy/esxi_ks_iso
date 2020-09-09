@@ -8,8 +8,8 @@ class Host {
     Host ([string]$Hostname) {
         $this.Hostname = $Hostname
     }
-    AddvSwitch([string]$Name) {
-        $newSwitch = [vSwitch]::new($Name)
+    AddvSwitch([string]$Name,[bool]$ModifyExisting) {
+        $newSwitch = [vSwitch]::new($Name,$ModifyExisting)
         $this.vSwitches.Add($newSwitch)
     }
     AddNTPSource([string]$NTP) {
@@ -42,8 +42,9 @@ Class vSwitch {
     [bool]$ModifyExisting
     [System.Collections.ArrayList]$NetworkAdapters = @()
     [System.Collections.ArrayList]$PortGroups = @()
-    vSwitch ([string]$Name){
+    vSwitch ([string]$Name,[bool]$ModifyExisting){
         $this.Name = $Name
+        $this.ModifyExisting = $ModifyExisting
     }
 
     AddNetworkAdapter([string]$Name) {
@@ -219,7 +220,8 @@ function Add-vSwitch {
     param (
         [Parameter(ValueFromPipeline)]
         [Host]$Hostname,
-        [string]$Name
+        [string]$Name,
+        [bool]$ModifyExisting = $false
     )
     
     begin {
@@ -230,7 +232,7 @@ function Add-vSwitch {
     }
     
     process {
-        $Hostname.AddvSwitch($Name)
+        $Hostname.AddvSwitch($Name,$ModifyExisting)
     }
     
     end {
@@ -344,19 +346,15 @@ function Format-NTPSources {
     $VMH = Get-VMH -Hostname $Name
     foreach ($NTPSource in $VMH.NTPSources)
     {
-        $NTPSource
-        $NTPSourcesResults += "server $NTPSource`r`n"
+        $NTPSourcesResult += "echo `"`server $NTPSource`"` >> /etc/ntp.conf;`r`n"
 
     }
-if ($NTPSourcesResults -ne $null) {
+if ($NTPSourcesResult -ne $null) {
 $result = @"
-cat > /etc/ntp.conf << __EOF__
-restrict default kod nomodify notrap noquery nopeer
-restrict 127.0.0.1
-driftfile /etc/ntp.drift
-$NTPSourcesResults
-__EOF__
-/sbin/chkconfig ntpd on   
+### Add NTP Server addresses
+$($NTPSourcesResult.TrimEnd())
+esxcli network firewall ruleset set --enabled=true --ruleset-id=ntpClient
+/sbin/chkconfig ntpd on;
 "@
 return $result
 }
@@ -452,6 +450,10 @@ reboot
 
 %firstboot --interpreter=busybox
 
+esxcli system settings advanced set -o /UserVars/SuppressShellWarning -i 1
+esxcli system settings advanced set -o /UserVars/HostClientCEIPOptIn -i 2
+esxcli network ip set --ipv6-enabled=false
+
 $(Format-vSwitch -Name $Hostname)
 $(Format-Uplinks -Name $Hostname)
 $(Format-PortGroup -Name $Hostname)
@@ -460,8 +462,10 @@ vim-cmd hostsvc/enable_ssh
 vim-cmd hostsvc/start_ssh
 vim-cmd hostsvc/enable_esx_shell
 vim-cmd hostsvc/start_esx_shell
-esxcli system settings advanced set -o /UserVars/SuppressShellWarning -i 1
+
 $(Format-NTPSources -Name $Hostname)
+#Reboot to persist changes
+esxcli system shutdown reboot -d 15 -r "rebooting after ESXi host configuration"
 "@
     }
     
@@ -1036,3 +1040,5 @@ function Out-Json {
 }
 
 if ($vSphere) {Remove-Variable vSphere}
+
+
