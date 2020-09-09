@@ -9,6 +9,9 @@ Take a look at the functions Get-CryptHash and Write-ISO. Feel free to rip them 
 
 try the example, make sure to have the -ISOPath set your actual path to esxi install media.
 
+The only thing thats bad... or not so good (depending on how you look at it) is the staticly assigned variable called $vSphere. You have to assign that if you intend to manually instantiate the [vSphere] object and access the Get/Set functions in ks_functions.ps1 and some other functions. It all depends Get-VMH function basically.
+Other then that... rock on!
+
 If you want to make changes and include more options in the kickstart script, look at the New-KsScript function in ks_functions.ps1
 
 Expected result from running Example.ps1
