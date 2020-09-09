@@ -39,6 +39,7 @@ Class vSphere {
 
 Class vSwitch {
     [string]$Name
+    [bool]$ModifyExisting
     [System.Collections.ArrayList]$NetworkAdapters = @()
     [System.Collections.ArrayList]$PortGroups = @()
     vSwitch ([string]$Name){
@@ -373,9 +374,15 @@ function Format-vSwitch {
     
 
         $VMH = Get-VMH -Hostname $Name
+        $result ="#Standard vSwitches`r`n"
         foreach ($vSwitch in $VMH.vSwitches){
-            $result ="#Standard vSwitches`r`n"
-            $result += "esxcli network vswitch standard add --vswitch-name=$($vSwitch.Name)`r`n"
+            if ($vSwitch.ModifyExisting){
+                
+            }
+            else {
+                $result += "esxcli network vswitch standard add --vswitch-name=$($vSwitch.Name)`r`n"
+            }
+            
         }
         return $result
 
@@ -389,10 +396,11 @@ function Format-PortGroup {
     
 
         $VMH = Get-VMH -Hostname $Name
+        $result ="#PortGroups`r`n"
         foreach ($vSwitch in $VMH.vSwitches)
         {
             foreach ($PortGroup in $vSwitch.PortGroups){
-                $result ="#PortGroups`r`n"
+                
                 $result += "esxcli network vswitch standard portgroup add --portgroup-name=$($PortGroup.Name) --vswitch-name=$($vSwitch.Name)`r`n"
                 $result += "esxcli network vswitch standard portgroup set --portgroup-name=$($PortGroup.Name) --vlan-id=$($PortGroup.VlanId)`r`n"
             }
