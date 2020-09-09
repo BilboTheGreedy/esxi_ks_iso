@@ -19,6 +19,21 @@
                                         {
                                             "NetworkAdapters":  [
                                                                     {
+                                                                        "Name":  "vmnic1"
+                                                                    }
+                                                                ],
+                                            "PortGroups":  [
+                                                               {
+                                                                   "Name":  "Ex-Mgmt",
+                                                                   "VlanId":  10
+                                                               }
+                                                           ],
+                                            "Name":  "vSwitch0",
+                                            "ModifyExisting":  true
+                                        },
+                                        {
+                                            "NetworkAdapters":  [
+                                                                    {
                                                                         "Name":  "vmnic4"
                                                                     },
                                                                     {
@@ -35,12 +50,13 @@
                                                                    "VlanId":  40
                                                                }
                                                            ],
-                                            "Name":  "vSwitch1"
+                                            "Name":  "vSwitch1",
+                                            "ModifyExisting":  false
                                         }
                                     ],
                       "Hostname":  "ESXi01.test.local",
                       "Password":  {
-                                       "Hashed":  "$6$FOwec5H8DisxEqgY$DjoaDe2bEWnxg7IeGXhnVjWp1j1MDdyW1mWREgxEgdhuaHiHVLsNh9bdu.vtb7A2qQE988yCxfjqkrdEmDEJV0",
+                                       "Hashed":  "$6$cctpPEUaUH/guIYm$aunFmNsOnh.GvcpsGA.GhsnYZu5KoXaUcdbFW9BKzKqrUWkvy1wDOoDbrRYfN/8P3uuzexS9/HFfPFExRReyL.",
                                        "Algorithm":  "SHA512",
                                        "PlainText":  "SuperSecret1"
                                    }
@@ -80,12 +96,13 @@
                                                                    "VlanId":  40
                                                                }
                                                            ],
-                                            "Name":  "vSwitch1"
+                                            "Name":  "vSwitch1",
+                                            "ModifyExisting":  false
                                         }
                                     ],
                       "Hostname":  "ESXi02.test.local",
                       "Password":  {
-                                       "Hashed":  "$5$o1wqrYq.HQRDBX.d$K5ebz6j1lJQtwsgk7ZgYTBFsqmUWdjtppXaCrNKuvQD",
+                                       "Hashed":  "$5$ZD1GY.xPzhi15JRd$4fXrT.iGDlYdyiZ9fK7q8Qjk7i3p.Km0ZtX8.0JhvE7",
                                        "Algorithm":  "SHA256",
                                        "PlainText":  "SuperSecret2"
                                    }
@@ -125,12 +142,13 @@
                                                                    "VlanId":  40
                                                                }
                                                            ],
-                                            "Name":  "vSwitch1"
+                                            "Name":  "vSwitch1",
+                                            "ModifyExisting":  false
                                         }
                                     ],
                       "Hostname":  "ESXi03.test.local",
                       "Password":  {
-                                       "Hashed":  "$1$vcGNJDPU$nbrW1TYaZl6D10zOnt0Zi/",
+                                       "Hashed":  "$1$sLkLgT9g$Ivx5BmS3T2.JID6oiO8gl.",
                                        "Algorithm":  "MD5",
                                        "PlainText":  "SuperSecret3"
                                    }
