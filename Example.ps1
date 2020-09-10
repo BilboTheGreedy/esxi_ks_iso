@@ -1,7 +1,7 @@
 . .\ks_functions.ps1
 #Something for a Welcome Message
 $Msg= "This is a very secure system. You should probably not attempt to sign in.
-matter of fact you are not priviliged to access the system
+matter of fact you are not privileged to access the system
 
 The SysAdmins"
 
