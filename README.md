@@ -30,8 +30,9 @@ Done :)
 
 Because everything is written with Objects its easy to reuse configurations. Include Out-Json | Out-File "x\y.json" -encoding ascii at the end of your script. And to reuse it, do the following.
 ```
+. .\ks_functions.ps1
 $vSphere = cat .\Current-config.json | ConvertFrom-Json
-Set-Paths -ISOPath "$PSScriptRoot\VMware-VMvisor-Installer-6.7.0.update03-14320388.x86_64.iso" -WorkDirectory "$PSScriptRoot\source" -OutputDirectory "$PSScriptRoot\ISO"
+Set-Paths -ISOPath "$PSScriptRoot\VMware-VMvisor-Installer-201912001-15160138.x86_64.iso" -WorkDirectory "$PSScriptRoot\source" -OutputDirectory "$PSScriptRoot\ISO"
 Mount-ISO 
 Set-SourceFiles
 foreach ($VMH in (Get-VMH -Hostname "*").Hostname)
