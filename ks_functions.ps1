@@ -1,3 +1,5 @@
+$ErrorActionPreference = "Stop"
+
 class Host {
     [string]$Hostname
     [System.Collections.ArrayList]$NTPSources = @() 
@@ -224,9 +226,11 @@ function Set-SSLCertificate {
         [string]$CertPath,
         [string]$KeyPath
     )
+        $Cert = (Get-Content $CertPath Get-Content -ErrorAction Stop)
+        $Key = (Get-Content $KeyPath Get-Content -ErrorAction Stop)
 
-    $Cert = (Get-Content $CertPath)
-    $Key = (Get-Content $KeyPath)
+
+
     foreach ($Line in $Cert) {
         if ($line -notlike "-----END*")
         {
