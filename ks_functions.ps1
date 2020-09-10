@@ -4,6 +4,7 @@ class Host {
     [Password]$Password
     [SSL]$SSL
     [Syslog]$Syslog
+    [string]$WelcomeMsg
     [ManagementNetwork]$ManagementNetwork = [ManagementNetwork]::new()
     
     [System.Collections.ArrayList]$vSwitches = @()
@@ -24,6 +25,9 @@ class Host {
     AddSyslogServer([string]$Address,[int]$Port,[string]$Protocol) {
         $newSyslog = [Syslog]::new($Address,$Port,$Protocol)
         $this.Syslog = $newSyslog
+    }
+    AddWelcomeMsg([string]$WelcomeMsg){
+        $this.WelcomeMsg = $WelcomeMsg
     }
 
 }
@@ -259,7 +263,17 @@ function Set-Syslog {
     $Hostname.AddSyslogServer($Address,$Port,$Protocol)
     
 }
+function Set-WelcomeMsg {
+    [CmdletBinding()]
+    param (
+        [Parameter(ValueFromPipeline)]
+        [Host]$Hostname,
+        [string]$WelcomeMsg
+    )
 
+    $Hostname.AddWelcomeMsg($WelcomeMsg)
+    
+}
 function Set-ManagementNetwork {
     [CmdletBinding()]
     param (
@@ -528,6 +542,16 @@ function Format-Uplinks {
     return $result
 }
 
+function Format-WelcomeMsg {
+    param (
+        [string]$Name
+    )
+    $VMH = Get-VMH -Hostname $Name
+    $result = "#Welcome Message`r`n"
+    $result += "esxcli system welcomemsg set  -m '$($VMH.WelcomeMsg)'`r`n"
+    $result
+}
+
 function New-KsScript {
     [CmdletBinding()]
     param (
@@ -567,6 +591,7 @@ vim-cmd hostsvc/start_esx_shell
 $(Format-Syslog -Name $Hostname)
 $(Format-NTPSources -Name $Hostname)
 $(Format-SSLCertificate -Name $Hostname)
+$(Format-WelcomeMsg -Name $Hostname)
 #Enter Maintenance Mode
 esxcli system maintenanceMode set -e true -t 60
 #Reboot to persist changes
