@@ -2,6 +2,8 @@ class Host {
     [string]$Hostname
     [System.Collections.ArrayList]$NTPSources = @() 
     [Password]$Password
+    [SSL]$SSL
+    [Syslog]$Syslog
     [ManagementNetwork]$ManagementNetwork = [ManagementNetwork]::new()
     
     [System.Collections.ArrayList]$vSwitches = @()
@@ -15,6 +17,14 @@ class Host {
     AddNTPSource([string]$NTP) {
         $this.NTPSources.Add($NTP)
     }
+    AddSSLCertificate([string]$Certificate,[string]$Key) {
+        $newCertificate = [SSL]::new($Certificate,$Key)
+        $this.SSL = $newCertificate
+    }
+    AddSyslogServer([string]$Address,[int]$Port,[string]$Protocol) {
+        $newSyslog = [Syslog]::new($Address,$Port,$Protocol)
+        $this.Syslog = $newSyslog
+    }
 
 }
 
@@ -27,6 +37,26 @@ class Password {
         $this.Hashed = $CryptoHash 
     }
     
+}
+
+class SSL {
+    [string]$Certificate
+    [string]$Key
+    SSL([string]$Certificate,[string]$Key){
+        $this.Certificate = $Certificate
+        $this.Key = $Key
+    }
+    
+}
+class Syslog {
+    [string]$Address
+    [int]$Port
+    [string]$Protocol
+    Syslog([string]$Address,[int]$Port,[string]$Protocol){
+        $this.Address = $Address
+        $this.Port = $Port
+        $this.Protocol = $Protocol
+    }
 }
 
 Class vSphere {
@@ -182,6 +212,54 @@ function Add-NTPSource {
 
     }
 }
+function Set-SSLCertificate {
+    [CmdletBinding()]
+    param (
+        [Parameter(ValueFromPipeline)]
+        [Host]$Hostname,
+        [string]$CertPath,
+        [string]$KeyPath
+    )
+
+    $Cert = (Get-Content $CertPath)
+    $Key = (Get-Content $KeyPath)
+    foreach ($Line in $Cert) {
+        if ($line -notlike "-----END*")
+        {
+            $CertString += $line+"\n"
+        }
+        
+        
+    }
+    $CertString += "-----END CERTIFICATE-----"
+    foreach ($Line in $Key) {
+        if ($line -notlike "-----END*")
+        {
+            $KeyString += $line+"\n"
+        }
+        
+        
+    }
+    $KeyString += "-----END PRIVATE KEY-----"
+
+    $Hostname.AddSSLCertificate($CertString,$KeyString)
+    
+}
+
+function Set-Syslog {
+    [CmdletBinding()]
+    param (
+        [Parameter(ValueFromPipeline)]
+        [Host]$Hostname,
+        [string]$Address,
+        [string]$Port,
+        [string]$Protocol
+    )
+
+    $Hostname.AddSyslogServer($Address,$Port,$Protocol)
+    
+}
+
 function Set-ManagementNetwork {
     [CmdletBinding()]
     param (
@@ -408,6 +486,30 @@ function Format-PortGroup {
         return $result
 }
 
+function Format-Syslog {
+    param (
+        [string]$Name
+    )
+    $VMH = Get-VMH -Hostname $Name
+    $result ="#Syslog`r`n"
+    $result +="esxcli system syslog config set --loghost='$($VMH.syslog.Protocol)://$($VMH.syslog.Address):$($VMH.syslog.Port)'`r`n"
+    $result +="esxcli system syslog reload`r`n"
+    return $result
+}
+
+function Format-SSLCertificate {
+    param (
+        [string]$Name
+    )
+    $VMH = Get-VMH -Hostname $Name
+    $result ="#SSLCertificate`r`n"
+    $result +="echo -e `'$($VMH.SSL.Certificate)`' > /etc/vmware/ssl/rui.crt`r`n"
+    $result +="echo -e `'$($VMH.SSL.Key)`' > /etc/vmware/ssl/rui.key`r`n"
+    $result +="services.sh restart`r`n"
+
+    $result
+}
+
 function Format-Uplinks {
     param (
         [string]$Name
@@ -462,8 +564,11 @@ vim-cmd hostsvc/enable_ssh
 vim-cmd hostsvc/start_ssh
 vim-cmd hostsvc/enable_esx_shell
 vim-cmd hostsvc/start_esx_shell
-
+$(Format-Syslog -Name $Hostname)
 $(Format-NTPSources -Name $Hostname)
+$(Format-SSLCertificate -Name $Hostname)
+#Enter Maintenance Mode
+esxcli system maintenanceMode set -e true -t 60
 #Reboot to persist changes
 esxcli system shutdown reboot -d 15 -r "rebooting after ESXi host configuration"
 "@
