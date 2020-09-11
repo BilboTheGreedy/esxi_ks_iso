@@ -226,31 +226,58 @@ function Set-SSLCertificate {
         [string]$CertPath,
         [string]$KeyPath
     )
-        $Cert = (Get-Content $CertPath Get-Content -ErrorAction Stop)
-        $Key = (Get-Content $KeyPath Get-Content -ErrorAction Stop)
 
-
-
-    foreach ($Line in $Cert) {
-        if ($line -notlike "-----END*")
-        {
-            $CertString += $line+"\n"
+    if (test-path $CertPath ){
+        $CertRegex = [regex] "CERTIFICATE-----"
+        if ( !(Get-Content $CertPath | Select-String -Pattern $CertRegex)) {
+            Write-Warning "certificate does not contain any private key start/end tags"
+            exit
         }
-        
-        
     }
-    $CertString += "-----END CERTIFICATE-----"
-    foreach ($Line in $Key) {
-        if ($line -notlike "-----END*")
-        {
-            $KeyString += $line+"\n"
+    else {
+        Write-Warning "Unable to locate certificate"
+        exit
+    }
+    if (test-path $CertPath ){
+        $KEYRegex = [regex] "PRIVATE\sKEY-----"
+        if ( !(Get-Content $KeyPath | Select-String -Pattern $KEYRegex)) {
+            Write-Warning "private key does not contain any private key start/end tags"
+            exit
         }
-        
-        
     }
-    $KeyString += "-----END PRIVATE KEY-----"
+    else {
+        Write-Warning "Unable to locate private key"
+        exit
+    }
+    
 
-    $Hostname.AddSSLCertificate($CertString,$KeyString)
+        $Cert = (Get-Content $CertPath)
+        $Key = (Get-Content $KeyPath)
+        foreach ($Line in $Cert) {
+            if ($line -notlike "-----END*")
+            {
+                $CertString += $line+"\n"
+            }
+            if ($line -like "-----END*")
+            {
+                $CertString += $line
+            }
+            
+        }
+        foreach ($Line in $Key) {
+            if ($line -notlike "-----END*")
+            {
+                $KeyString += $line+"\n"
+            }
+            if ($line -like "-----END*")
+            {
+                $KeyString += $line
+            }
+            
+            
+        }
+
+        $Hostname.AddSSLCertificate($CertString,$KeyString)
     
 }
 
@@ -640,7 +667,13 @@ function Set-Paths {
     }
     $ISO.Source = $WorkDirectory
     $ISO.Output = $OutputDirectory
-    $ISO.ISOPath = $ISOPath
+    if (test-path $ISOPath ){
+        $ISO.ISOPath = $ISOPath
+    }
+    else {
+        Write-Warning "Unable to find $ISOPath"
+        exit
+    }
 }        
 
 
@@ -1174,5 +1207,3 @@ function Out-Json {
 }
 
 if ($vSphere) {Remove-Variable vSphere}
-
-
